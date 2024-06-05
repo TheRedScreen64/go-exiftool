@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 )
@@ -24,6 +25,9 @@ func NewExifTool(path string) (*ExifTool, error) {
 	args := []string{"-stay_open", "True", "-@", "-"}
 
 	et.cmd = exec.Command(path, args...)
+	if runtime.GOOS == "windows" {
+		hideWindow(et.cmd)
+	}
 
 	read, write := io.Pipe()
 	et.mergedOut = read
